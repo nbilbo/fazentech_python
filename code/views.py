@@ -53,7 +53,12 @@ class View(Frame):
         """
         if self.formulario_adicionar:
             novo_formulario = self.formulario_adicionar(parent=self)
-            novo_formulario.mainloop()
+            # carregadando o estilo
+            programa = get_tk(self)
+            programa.carregar_estilo(novo_formulario, "button")
+            programa.carregar_estilo(novo_formulario, "label")
+            programa.carregar_estilo(novo_formulario, "entry")
+            
     
     def abrir_formulario_atualizar(self):
         """
@@ -64,8 +69,12 @@ class View(Frame):
             if selecoes:
                 _id = str(self.tabela.item(selecoes[0])["values"][0])
                 novo_formulario = self.formulario_atualizar(parent=self, id=_id)
-                novo_formulario.mainloop()
-    
+                # carregadando o estilo
+                programa = get_tk(self)
+                programa.carregar_estilo(novo_formulario, "button")
+                programa.carregar_estilo(novo_formulario, "label")
+                programa.carregar_estilo(novo_formulario, "entry")
+        
     def remover_dados(self):
         """
         Apagar as informacoes da linha selecionada.

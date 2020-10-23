@@ -1,19 +1,33 @@
 # coding: utf-8
 
 
-from tkinter import Tk, messagebox
+from tkinter import (Tk, messagebox, Menu, Label, Button, 
+                     Frame, Toplevel, Widget, LabelFrame,
+                     Entry)
 from tkinter.ttk import Notebook
 
 from views import ViewFuncionarios, ViewAnimais, ViewOrdenhas
+from conection import StyleConection
+from program_config import ProgramConfig
 
 class Programa(Tk):
     nome_arquivo_json = "dados.json"
+    style_conection = StyleConection()
 
     def __init__(self):
         super(Programa, self).__init__()
         self.configuracoes()
         self.inicializar_dados(dados=self.get_dados())
-
+            
+        # ---criando barra de menu
+        menu_principal = Menu(self)
+        
+        menu = Menu(menu_principal, tearoff=False)
+        menu.add_command(label="Configurações", command=self.abrir_configuracoes)
+        
+        menu_principal.add_cascade(label="Menu", menu=menu)
+        self.config(menu=menu_principal)
+        
         # ---criando as abas e instanciando as views 
         gerenciador_abas = Notebook(self)
         gerenciador_abas.pack(fill="both", expand=True)
@@ -25,9 +39,13 @@ class Programa(Tk):
         gerenciador_abas.add(self.view_funcionaios, text="Funcionários")
         gerenciador_abas.add(self.view_animais, text="Animais")
         gerenciador_abas.add(self.view_ordenhas, text="Ordenhas")
+        
 
         # ---carregaando os dados nas tabelas.
         self.atualizar_tabelas()
+        
+        # ---carregando o estilo
+        self.carregar_estilo(self, "button")
         
     def executar(self):
         """
@@ -137,6 +155,32 @@ class Programa(Tk):
         with open(json_dir, "w", encoding="utf-8") as f:
             json_dict = dumps(python_dict, indent=4, ensure_ascii=False)
             f.write(json_dict)
+    
+    def abrir_configuracoes(self):
+        """Abrir a janela de configurações.
+        """
+        janela_configuracoes = ProgramConfig(master=self, program=self)
+    
+    def carregar_estilo(self, janela, classe):
+        """Utiliza recursão. 
+        Pegar os dados em self.style_conection 
+        e aplicar em todos os widgets.
+        Param:
+            janela: A janela que contem os widgets.
+            classe: A classe dos widgets que devem receber a alteração.
+        """
+        classes={"label":(Label,),
+                "button":(Button,),
+                "entry":(Entry)}
+        estilo = self.style_conection.get_data()[classe]
+        
+        for children in janela.winfo_children():
+            if isinstance(children, classes[classe]):
+                children.config(**estilo)
+            elif isinstance(children, (Tk, Frame, Notebook, LabelFrame)):
+                self.carregar_estilo(children, classe)
+            
+            
 
     def get_dados(self):
         """
@@ -156,6 +200,9 @@ class Programa(Tk):
         # se não existir o arquivo json
         else:
             return None
+    
+    def get_style_conection(self):
+        return self.style_conection
 
 
 if __name__ == "__main__":
