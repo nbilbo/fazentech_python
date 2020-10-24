@@ -1,4 +1,4 @@
-# coding: utf-8
+
 
 # imports
 import copy
@@ -13,7 +13,8 @@ class Tab(Frame):
     def __init__(self, master, program, data, *args, **kwargs):
         super(Tab, self).__init__(master, *args, **kwargs)
         self.program = program
-        self.data = copy.deepcopy(data)
+        self.backup = copy.deepcopy(data)
+        #self.data = copy.deepcopy(data)
         # ---main container
         self.main_container = Frame(self)
         self.main_container.pack(fill="both", expand=True)
@@ -65,12 +66,13 @@ class LabelTab(CommonFontTab):
     def __init__(self, *args, **kwargs):
         super(LabelTab, self).__init__(*args, **kwargs)
         # ---setting current font size
-        current_font_size = self.data["label"]["font"][1]
+        current_font_size = self.backup["label"]["font"][1]
         self.font_size.set_valor(current_font_size)
 
     def aply(self):
-        self.data["label"]["font"][1] = self.font_size.get_valor()
-        self.program.get_style_conection().set_data(self.data)
+        data = self.program.get_style_conection().get_data()
+        data["label"]["font"][1] = self.font_size.get_valor()
+        self.program.get_style_conection().set_data(data)
         self.program.carregar_estilo(self.program, "label")
    
 
@@ -78,12 +80,13 @@ class ButtonTab(CommonFontTab):
     def __init__(self, *args, **kwargs):
         super(ButtonTab, self).__init__(*args, **kwargs)
         # ---setting current font size
-        current_font_size = self.data["button"]["font"][1]
+        current_font_size = self.backup["button"]["font"][1]
         self.font_size.set_valor(current_font_size)
 
     def aply(self):
-        self.data["button"]["font"][1] = self.font_size.get_valor()
-        self.program.get_style_conection().set_data(self.data)
+        data = self.program.get_style_conection().get_data()
+        data["button"]["font"][1] = self.font_size.get_valor()
+        self.program.get_style_conection().set_data(data)
         self.program.carregar_estilo(self.program, "button")
 
 
@@ -91,12 +94,13 @@ class EntryTab(CommonFontTab):
     def __init__(self, *args, **kwargs):
         super(EntryTab, self).__init__(*args, **kwargs)
         # ---setting current_font_size
-        current_font_size = self.data["entry"]["font"][1]
+        current_font_size = self.backup["entry"]["font"][1]
         self.font_size.set_valor(current_font_size)
     
     def aply(self):
-        self.data["entry"]["font"][1] = self.font_size.get_valor()
-        self.program.get_style_conection().set_data(self.data)
+        data = self.program.get_style_conection().get_data()
+        data["entry"]["font"][1] = self.font_size.get_valor()
+        self.program.get_style_conection().set_data(data)
         self.program.carregar_estilo(self.program, "entry")
 
 
